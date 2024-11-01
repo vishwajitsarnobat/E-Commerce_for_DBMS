@@ -7,25 +7,21 @@ const DarkMode = () => {
         localStorage.getItem("theme") || "light"
     );
 
-    // Access the HTML root element
-    const element = document.documentElement;
+    // Function to update the theme in local storage and on the root element
+    const updateTheme = (newTheme) => {
+        localStorage.setItem("theme", newTheme);
+        document.documentElement.classList.toggle("dark", newTheme === "dark");
+        document.documentElement.classList.toggle("light", newTheme === "light");
+    };
 
-    // Set theme in local storage and update the root element classes
+    // Update theme on component mount and when it changes
     React.useEffect(() => {
-        localStorage.setItem("theme", theme);
-        if (theme === "dark") {
-            element.classList.add("dark");
-            element.classList.remove("light");
-        } else {
-            element.classList.remove("dark");
-            element.classList.add("light");
-        }
-    }, [theme]); // Dependency added to re-run when `theme` changes
+        updateTheme(theme);
+    }, [theme]);
 
     // Toggle theme between light and dark
     const toggleTheme = () => {
-        const newTheme = theme === "dark" ? "light" : "dark";
-        setTheme(newTheme);
+        setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
     };
 
     return (
@@ -37,6 +33,7 @@ const DarkMode = () => {
                 className={`w-12 cursor-pointer absolute right-0 z-10 ${
                     theme === "dark" ? "opacity-0" : "opacity-100"
                 } transition-opacity duration-300`}
+                aria-pressed={theme === "light"}
             />
             <img
                 onClick={toggleTheme}
@@ -45,6 +42,7 @@ const DarkMode = () => {
                 className={`w-12 cursor-pointer ${
                     theme === "dark" ? "opacity-100" : "opacity-0"
                 } transition-opacity duration-300`}
+                aria-pressed={theme === "dark"}
             />
         </div>
     );

@@ -1,90 +1,90 @@
-import React from 'react'
-import Heading from '../Shared/Heading'
-import ProductCard from './ProductCard'
-import Img1 from '../../assets/product/p-1.jpg'
-import Img2 from '../../assets/product/p-2.jpg'
-import Img3 from '../../assets/product/p-3.jpg'
-import Img4 from '../../assets/product/p-4.jpg'
-import Img5 from '../../assets/product/p-5.jpg'
-import Img6 from '../../assets/product/p-6.jpg'
-import Img7 from '../../assets/product/p-7.jpg'
+import React from 'react';
+import Heading from '../Shared/Heading';
+import ProductCard from './ProductCard';
+import Img1 from '../../assets/product/p-1.jpg';
+import Img2 from '../../assets/product/p-2.jpg';
+import Img3 from '../../assets/product/p-3.jpg';
+import Img4 from '../../assets/product/p-4.jpg';
+import Img5 from '../../assets/product/p-5.jpg';
+import Img6 from '../../assets/product/p-6.jpg';
+import Img7 from '../../assets/product/p-7.jpg';
 
 const ProductsData = [
     {
         id: 1,
         img: Img1,
         title: "Boat Headphones",
-        price: "12000",
-        aosDisplay: "0"
+        price: "12,000",
+        aosDisplay: "0",
     },
     {
         id: 2,
         img: Img2,
         title: "Rocky Mountain",
-        price: "4200",
-        aosDisplay: "200"
+        price: "4,200",
+        aosDisplay: "200",
     },
-    {  
+    {
         id: 3,
         img: Img3,
         title: "Goggles",
-        price: "3200",
-        aosDisplay: "400"
+        price: "3,200",
+        aosDisplay: "400",
     },
-    {  
+    {
         id: 4,
         img: Img4,
         title: "Printed",
-        price: "22000",
-        aosDisplay: "600"
-    }
-]
+        price: "22,000",
+        aosDisplay: "600",
+    },
+];
 
 const ProductsData2 = [
     {
         id: 1,
         img: Img2,
         title: "Noise",
-        price: "2200",
-        aosDisplay: "0"
+        price: "2,200",
+        aosDisplay: "0",
     },
     {
         id: 2,
         img: Img5,
         title: "Skull Candy Headphones",
-        price: "4200",
-        aosDisplay: "200"
+        price: "4,200",
+        aosDisplay: "200",
     },
-    {  
+    {
         id: 3,
         img: Img6,
         title: "Sony Headphones",
-        price: "32000",
-        aosDisplay: "400"
+        price: "32,000",
+        aosDisplay: "400",
     },
-    {  
+    {
         id: 4,
         img: Img7,
-        title: "Sunheisser headphones",
-        price: "220000",
-        aosDisplay: "600"
-    }
-]
+        title: "Sennheiser Headphones",
+        price: "220,000",
+        aosDisplay: "600",
+    },
+];
 
 const Products = () => {
-  return (
-    <div>
-        <div className="container">
-            <div className="grid">
+    return (
+        <div className="my-14">
+            <div className="container">
                 {/* Header Section */}
-                <Heading title="Our Products" subtitle={"Explore our products"}/>
+                <Heading title="Our Products" subtitle="Explore our collection of top-quality products" />
                 {/* Body Section */}
-                <ProductCard data={ProductsData} />
-                <ProductCard data={ProductsData2} />
+                <div className="grid gap-5">
+                    <ProductCard data={ProductsData} />
+                    <ProductCard data={ProductsData2} />
+                </div>
             </div>
         </div>
-    </div>
-  )
-}
+    );
+};
 
-export default Products
+export default Products;

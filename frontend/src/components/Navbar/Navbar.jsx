@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { FaShoppingCart, FaCaretDown } from "react-icons/fa";
 import DarkMode from "./DarkMode";
@@ -16,7 +16,12 @@ const DropdownLinks = [
     { id: 3, name: "Support", link: "/#support" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ handleOrderPopup }) => {
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+    const closeDropdown = () => setDropdownOpen(false);
+
     return (
         <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
             <div className="py-4">
@@ -29,7 +34,6 @@ const Navbar = () => {
                         >
                             NxtComm
                         </a>
-                        {/* Menu items */}
                         <div className="hidden lg:block">
                             <ul className="flex items-center gap-4">
                                 {MenuLinks.map((data) => (
@@ -44,29 +48,32 @@ const Navbar = () => {
                                 ))}
                                 {/* Dropdown */}
                                 <li className="relative cursor-pointer group">
-                                    <a
-                                        href="#"
+                                    <button
+                                        onClick={toggleDropdown}
                                         className="flex items-center gap-1 font-semibold text-gray-500 dark:hover:text-white py-2"
                                     >
                                         Quick Links
-                                        <FaCaretDown className="group-hover:rotate-180 duration-300" />
-                                    </a>
-                                    {/* Dropdown links */}
-                                    <div className="absolute z-50 hidden group-hover:block w-[200px] rounded-md bg-white shadow-md dark:bg-gray-900 p-2 dark:text-white">
-                                        <ul className="space-y-2">
-                                            {DropdownLinks.map((data) => (
-                                                <li key={data.id}>
-                                                    <a
-                                                        href={data.link}
-                                                        className="text-gray-500 dark:hover:text-white duration-200
-                                                        inline-block w-full p-2 hover:bg-primary/20 rounded-md font-semibold"
-                                                    >
-                                                        {data.name}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                                        <FaCaretDown className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    {dropdownOpen && (
+                                        <div
+                                            className="absolute z-50 w-[200px] rounded-md bg-white shadow-md dark:bg-gray-900 p-2 dark:text-white"
+                                            onMouseLeave={closeDropdown}
+                                        >
+                                            <ul className="space-y-2">
+                                                {DropdownLinks.map((data) => (
+                                                    <li key={data.id}>
+                                                        <a
+                                                            href={data.link}
+                                                            className="text-gray-500 dark:hover:text-white duration-200 inline-block w-full p-2 hover:bg-primary/20 rounded-md font-semibold"
+                                                        >
+                                                            {data.name}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
                                 </li>
                             </ul>
                         </div>
@@ -80,11 +87,16 @@ const Navbar = () => {
                                 type="text"
                                 placeholder="Search"
                                 className="search-bar"
+                                aria-label="Search"
                             />
                             <IoMdSearch className="text-xl text-gray-600 group-hover:text-primary dark:text-gray-400 absolute top-1/2 -translate-y-1/2 right-3 duration-200" />
                         </div>
                         {/* Cart button */}
-                        <button className="relative p-3">
+                        <button
+                            className="relative p-3"
+                            onClick={handleOrderPopup}
+                            aria-label="Shopping Cart"
+                        >
                             <FaShoppingCart className="text-xl text-gray-600 dark:text-gray-400" />
                             <div className="w-4 h-4 bg-red-500 text-white rounded-full absolute top-0 right-0 flex items-center justify-center text-xs">
                                 4

@@ -6,25 +6,25 @@ const ServiceData = [
         id: 1,
         icon: <FaCarSide className="text-4xl md:text-5xl text-primary" />,
         title: "Free Shipping",
-        description: "Free Shipping on all Orders"
+        description: "Enjoy free shipping on all orders, no minimum purchase required!"
     },
     {
         id: 2,
         icon: <FaCheckCircle className="text-4xl md:text-5xl text-primary" />,
-        title: "Safe Money",
-        description: "30 days money back"
+        title: "Money-Back Guarantee",
+        description: "Shop confidently with our 30-day money-back guarantee!"
     },
     {
         id: 3,
         icon: <FaWallet className="text-4xl md:text-5xl text-primary" />,
-        title: "Secure Payment",
-        description: "All payments 100% secure"
+        title: "Secure Payments",
+        description: "All transactions are 100% secure with industry-standard encryption."
     },
     {
         id: 4,
         icon: <FaHeadphones className="text-4xl md:text-5xl text-primary" />,
-        title: "Online Support 24/7",
-        description: "Technical support 24/7"
+        title: "24/7 Customer Support",
+        description: "Our dedicated support team is here to help you anytime, day or night."
     }
 ];
 
