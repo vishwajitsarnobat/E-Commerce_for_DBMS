@@ -15,6 +15,8 @@ import Footer from './components/Footer/Footer'
 import Popup from './components/Popup/Popup';
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Profile from './components/Profile/Profile';
 
 const BannerData = {
     discount: "30% OFF",
@@ -51,25 +53,30 @@ const App = () => {
             easing: "ease-in-sine",
             delay: 100,
             offset: 100,
-        })
-        AOS.refresh()
-    }, [])
+        });
+        AOS.refresh();
+    }, []);
+
     return (
-        <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden">
-            <Navbar handleOrderPopup = {handleOrderPopup} />
-            <Hero handleOrderPopup = {handleOrderPopup} />
-            <Category />
-            <Category2 />
-            <Services />
-            <Banner data = {BannerData} />
-            <Products />
-            <Banner data = {BannerData2} />
-            <Blogs />
-            <Partners />
-            <Footer />
-            <Popup orderPopup={orderPopup}
-            handleOrderPopup={handleOrderPopup}/>
-        </div>
+        <Router>
+            <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden">
+                <Navbar handleOrderPopup={handleOrderPopup} />
+                <Routes>
+                    <Route path="/" element={<Hero handleOrderPopup={handleOrderPopup} />} />
+                    <Route path="/profile" element={<Profile />} /> {/* Profile route */}
+                </Routes>
+                <Category />
+                <Category2 />
+                <Services />
+                <Banner data={BannerData} />
+                <Products />
+                <Banner data={BannerData2} />
+                <Blogs />
+                <Partners />
+                <Footer />
+                <Popup orderPopup={orderPopup} handleOrderPopup={handleOrderPopup} />
+            </div>
+        </Router>
     );
 };
 

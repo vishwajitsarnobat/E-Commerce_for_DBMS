@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { FaShoppingCart, FaCaretDown } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import DarkMode from "./DarkMode";
+import Button from '../Shared/Button';
 
 const MenuLinks = [
     { id: 1, name: "Home", link: "/#" },
@@ -18,9 +20,14 @@ const DropdownLinks = [
 
 const Navbar = ({ handleOrderPopup }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
     const closeDropdown = () => setDropdownOpen(false);
+
+    const goToProfile = () => {
+        navigate("/profile"); // Navigate to the profile page
+    };
 
     return (
         <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
@@ -102,6 +109,9 @@ const Navbar = ({ handleOrderPopup }) => {
                                 4
                             </div>
                         </button>
+                        {/* Profile and user switch */}
+                        <Button text="Profile" bgColor="bg-primary" textColor="text-white" handler={goToProfile} />
+                        <Button text="User type" bgColor="bg-primary" textColor="text-white" handler={() => {}} />
                         {/* Dark mode toggle */}
                         <DarkMode />
                     </div>
