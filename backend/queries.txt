@@ -1,0 +1,279 @@
+CREATE DATABASE aayush3;
+use aayush3;
+CREATE TABLE Customer (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    phone_number VARCHAR(15),
+    registration_date DATE,
+    loyalty_points INT
+);
+
+CREATE TABLE Product_Category (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(50),
+    description VARCHAR(255)
+);
+
+CREATE TABLE Offer (
+    offer_id INT PRIMARY KEY,
+    offer_title VARCHAR(100),
+    start_date DATE,
+    end_date DATE,
+    discount_value DECIMAL(5, 2)
+);
+
+CREATE TABLE Supplier (
+    supplier_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    phone_number VARCHAR(15)
+);
+
+CREATE TABLE Employee (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    role VARCHAR(50),
+    email VARCHAR(100),
+    phone_no VARCHAR(15),
+    hire_date DATE,
+    salary DECIMAL(10, 2)
+);
+
+CREATE TABLE Shopping_Cart (
+    cart_id INT PRIMARY KEY,
+    customer_id INT,
+    Total DECIMAL(10, 2),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+CREATE TABLE Product (
+    product_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    description VARCHAR(255),
+    rating DECIMAL(2, 1),
+    price DECIMAL(10, 2),
+    category_id INT,
+    Offer_id INT,
+    stock_quantity INT,
+    supplier_id INT,
+    cart_id INT,
+    FOREIGN KEY (category_id) REFERENCES Product_Category(category_id),
+    FOREIGN KEY (Offer_id) REFERENCES Offer(offer_id),
+    FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id),
+    FOREIGN KEY (cart_id) REFERENCES Shopping_Cart(cart_id)
+);
+
+CREATE TABLE Cart_Products (
+    cart_id INT,
+    product_id INT,
+    Quantity INT,
+    FOREIGN KEY (cart_id) REFERENCES Shopping_Cart(cart_id),
+    FOREIGN KEY (product_id) REFERENCES Product(product_id)
+);
+
+CREATE TABLE Address (
+    customer_id INT,
+    street VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    pin_code VARCHAR(10),
+    country VARCHAR(100),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+CREATE TABLE Warehouse (
+    warehouse_id INT PRIMARY KEY,
+    capacity INT,
+    rent DECIMAL(10, 2),
+    manager_id INT,
+    FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
+);
+
+CREATE TABLE Review (
+    review_id INT PRIMARY KEY,
+    customer_id INT,
+    product_id INT,
+    rating DECIMAL(2, 1),
+    review_text TEXT,
+    review_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (product_id) REFERENCES Product(product_id)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    cart_id INT,
+    order_date DATE,
+    delivery_date DATE,
+    total_amount DECIMAL(10, 2),
+    status VARCHAR(50),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (cart_id) REFERENCES Shopping_Cart(cart_id)
+);
+
+CREATE TABLE Transaction (
+    transaction_id INT PRIMARY KEY,
+    order_id INT,
+    transaction_date DATE,
+    amount DECIMAL(10, 2),
+    transaction_status VARCHAR(50),
+    payment_method VARCHAR(50),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+);
+
+DELIMITER //
+
+CREATE TRIGGER UpdateShoppingCartTotal
+AFTER INSERT ON Cart_Products
+FOR EACH ROW
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+    SELECT SUM(p.price * cp.Quantity)
+    INTO total
+    FROM Product p
+    JOIN Cart_Products cp ON p.product_id = cp.product_id
+    WHERE cp.cart_id = NEW.cart_id;
+
+    UPDATE Shopping_Cart
+    SET Total = total
+    WHERE cart_id = NEW.cart_id;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER InsertOrderTotal
+BEFORE INSERT ON Orders
+FOR EACH ROW
+BEGIN
+    DECLARE cart_total DECIMAL(10, 2);
+
+    -- Fetch the total from the Shopping_Cart based on the cart_id
+    SELECT Total INTO cart_total
+    FROM Shopping_Cart
+    WHERE cart_id = NEW.cart_id;
+
+    -- Set the total_amount in the new row for Orders
+    SET NEW.total_amount = cart_total;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER InsertTransactionAmount
+BEFORE INSERT ON Transaction
+FOR EACH ROW
+BEGIN
+    DECLARE order_total DECIMAL(10, 2);
+
+    -- Fetch the total_amount from the Orders table based on the order_id
+    SELECT total_amount INTO order_total
+    FROM Orders
+    WHERE order_id = NEW.order_id;
+
+    -- Set the amount in the new row for Transaction
+    SET NEW.amount = order_total;
+END //
+
+DELIMITER ;
+
+
+-- Insert Values
+INSERT INTO Customer (customer_id, first_name, last_name, email, phone_number, registration_date, loyalty_points) VALUES
+(1, 'John', 'Doe', 'john.doe@example.com', '1234567890', '2024-01-01', 100),
+(2, 'Jane', 'Smith', 'jane.smith@example.com', '1234567891', '2024-01-02', 150),
+(3, 'Alice', 'Johnson', 'alice.johnson@example.com', '1234567892', '2024-01-03', 200),
+(4, 'Bob', 'Brown', 'bob.brown@example.com', '1234567893', '2024-01-04', 250),
+(5, 'Charlie', 'Davis', 'charlie.davis@example.com', '1234567894', '2024-01-05', 300);
+
+INSERT INTO Product_Category (category_id, category_name, description) VALUES
+(1, 'Electronics', 'Devices like phones, laptops, etc.'),
+(2, 'Books', 'Fiction and non-fiction books.'),
+(3, 'Clothing', 'Men and women clothing.'),
+(4, 'Home Appliances', 'Appliances for home use.'),
+(5, 'Toys', 'Toys for children.');
+
+INSERT INTO Offer (offer_id, offer_title, start_date, end_date, discount_value) VALUES
+(1, 'New Year Sale', '2024-01-01', '2024-01-15', 20.00),
+(2, 'Winter Sale', '2024-01-10', '2024-01-20', 15.00),
+(3, 'Spring Sale', '2024-02-01', '2024-02-15', 10.00),
+(4, 'Summer Sale', '2024-06-01', '2024-06-15', 25.00),
+(5, 'Back to School', '2024-08-01', '2024-08-15', 30.00);
+
+INSERT INTO Supplier (supplier_id, first_name, last_name, email, phone_number) VALUES
+(1, 'Michael', 'Smith', 'michael.smith@supplier.com', '1234567800'),
+(2, 'Sarah', 'Connor', 'sarah.connor@supplier.com', '1234567801'),
+(3, 'James', 'Bond', 'james.bond@supplier.com', '1234567802'),
+(4, 'Emma', 'Watson', 'emma.watson@supplier.com', '1234567803'),
+(5, 'Liam', 'Nelson', 'liam.nelson@supplier.com', '1234567804');
+
+INSERT INTO Employee (employee_id, first_name, last_name, role, email, phone_no, hire_date, salary) VALUES
+(1, 'Alice', 'Walker', 'Warehouse Manager', 'alice.walker@company.com', '1234567900', '2024-01-01', 60000.00),
+(2, 'John', 'Doe', 'Delivery Person', 'john.doe@company.com', '1234567901', '2024-01-02', 40000.00),
+(3, 'Jane', 'Doe', 'Software Engineer', 'jane.doe@company.com', '1234567902', '2024-01-03', 80000.00),
+(4, 'Bob', 'Smith', 'Warehouse Worker', 'bob.smith@company.com', '1234567903', '2024-01-04', 35000.00),
+(5, 'Charlie', 'Johnson', 'IT Support', 'charlie.johnson@company.com', '1234567904', '2024-01-05', 50000.00);
+
+INSERT INTO Shopping_Cart (cart_id, customer_id, Total) VALUES
+(1, 1, 0.00),
+(2, 2, 0.00),
+(3, 3, 0.00),
+(4, 4, 0.00),
+(5, 5, 0.00);
+
+INSERT INTO Product (product_id, name, description, rating, price, category_id, Offer_id, stock_quantity, supplier_id, cart_id) VALUES
+(1, 'Laptop', '15 inch laptop', 4.5, 1000.00, 1, 1, 50, 1, 1),
+(2, 'Smartphone', 'Latest model smartphone', 4.7, 800.00, 1, 2, 100, 2, 1),
+(3, 'Fiction Book', 'Best-selling fiction book', 4.2, 15.00, 2, 3, 200, 3, 2),
+(4, 'T-Shirt', 'Cotton t-shirt', 4.0, 20.00, 3, 4, 150, 4, 3),
+(5, 'Blender', 'High-speed blender', 4.6, 50.00, 4, 5, 75, 5, 4);
+
+INSERT INTO Cart_Products (cart_id, product_id, Quantity) VALUES
+(1, 1, 1),
+(1, 2, 2),
+(2, 3, 3),
+(3, 4, 1),
+(4, 5, 2);
+
+INSERT INTO Address (customer_id, street, city, state, pin_code, country) VALUES
+(1, '123 Main St', 'New York', 'NY', '10001', 'USA'),
+(2, '456 Elm St', 'Los Angeles', 'CA', '90001', 'USA'),
+(3, '789 Maple St', 'Chicago', 'IL', '60007', 'USA'),
+(4, '321 Oak St', 'Houston', 'TX', '77001', 'USA'),
+(5, '654 Pine St', 'Phoenix', 'AZ', '85001', 'USA');
+
+INSERT INTO Warehouse (warehouse_id, capacity, rent, manager_id) VALUES
+(1, 5000, 2000.00, 1),
+(2, 3000, 1500.00, 2),
+(3, 4000, 1800.00, 3),
+(4, 4500, 2200.00, 4),
+(5, 3500, 1700.00, 5);
+
+INSERT INTO Review (review_id, customer_id, product_id, rating, review_text, review_date) VALUES
+(1, 1, 1, 5.0, 'Great laptop!', '2024-01-10'),
+(2, 2, 2, 4.5, 'Love this smartphone!', '2024-01-11'),
+(3, 3, 3, 3.0, 'Not what I expected.', '2024-01-12'),
+(4, 4, 4, 4.0, 'Good quality.', '2024-01-13'),
+(5, 5, 5, 4.5, 'Works perfectly.', '2024-01-14');
+
+INSERT INTO Orders (order_id, customer_id, cart_id, order_date, delivery_date, total_amount, status) VALUES
+(1, 1, 1, '2024-01-15', '2024-01-20', 0.00, 'Pending'),
+(2, 2, 2, '2024-01-16', '2024-01-21', 0.00, 'Pending'),
+(3, 3, 3, '2024-01-17', '2024-01-22', 0.00, 'Pending'),
+(4, 4, 4, '2024-01-18', '2024-01-23', 0.00, 'Pending'),
+(5, 5, 5, '2024-01-19', '2024-01-24', 0.00, 'Pending');
+
+INSERT INTO Transaction (transaction_id, order_id, transaction_date, amount, transaction_status, payment_method) VALUES
+(1, 1, '2024-01-15', 0.00, 'Failed', 'Credit Card'),
+(2, 2, '2024-01-16', 0.00, 'Pending', 'PayPal'),
+(3, 3, '2024-01-17', 0.00, 'Failed', 'Debit Card'),
+(4, 4, '2024-01-18', 0.00, 'Pending', 'Credit Card'),
+(5, 5, '2024-01-19', 0.00, 'Completed', 'PayPal');
+
