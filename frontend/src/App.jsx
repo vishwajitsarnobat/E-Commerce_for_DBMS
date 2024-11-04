@@ -1,90 +1,49 @@
-import React , {useEffect} from 'react';
-import Navbar from './components/Navbar/Navbar';
-import Hero from './components/Hero/Hero'
-import './App.css';
-import Category from './components/Category/Category';
-import Category2 from './components/Category/Category2';
-import Services from './components/Services/Services'
-import Banner from './components/Banner/Banner'
-import headphone from './assets/hero/headphone.png'
-import Products from './components/Products/Products';
-import smartwatch from './assets/category/smartwatch2-removebg-preview.png';
-import Blogs from './components/Blogs/Blogs';
-import Partners from './components/Partners/Partners'
-import Footer from './components/Footer/Footer'
-import Popup from './components/Popup/Popup';
+import React, { useEffect } from 'react';
+import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Profile from './components/Profile/Profile';
 
-const BannerData = {
-    discount: "30% OFF",
-    title: "Fine Smile",
-    date: "10 November to 15 November",
-    image: headphone,
-    title2: "Air Solo Bass",
-    title3: "Diwali Sale",
-    title4: "Diwali Dhamaka Offer",
-    bgColor: "#f42c37"
-}
-
-const BannerData2 = {
-    discount: "25% OFF",
-    title: "Happy Hours",
-    date: "25 December to 31 December",
-    image: smartwatch,
-    title2: "Smart Solo",
-    title3: "Winter Sale",
-    title4: "A Gift for Christmas and New Year",
-    bgColor: "#2dcc6f"
-}
+// Import components
+import Profile from './components/UserHomepage/Profile/Profile';
+import UserHomepage from './components/UserHomepage/UserHomepage';
+import EmployeeHomepage from './components/EmployeeHomepage/EmployeeHomepage';
+import AdminHomepage from './components/AdminHomepage/AdminHomepage';
 
 const App = () => {
-    useEffect(()=>{
-        fetch("http://localhost:3000/users")
-        .then(res=>res.json())
-        .then(data=>console.log(data))
-        .catch(err=>console.log(err));
-    },[])
-    
-    const [orderPopup, setOrderPopup] = React.useState(false);
+  const [orderPopup, setOrderPopup] = React.useState(false);
+  
+  const handleOrderPopup = () => {
+    setOrderPopup(!orderPopup);
+  };
 
-    const handleOrderPopup = () => {
-        setOrderPopup(!orderPopup);
-    };
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: "ease-in-sine",
+      delay: 100,
+      offset: 100,
+    });
+    AOS.refresh();
+  }, []);
 
-    React.useEffect(() => {
-        AOS.init({
-            duration: 800,
-            easing: "ease-in-sine",
-            delay: 100,
-            offset: 100,
-        });
-        AOS.refresh();
-    }, []);
+  // Define routes with a root route
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/">
+        <Route index element={<UserHomepage />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="UserHomepage" element={<UserHomepage />} />
+        <Route path="EmployeeHomepage" element={<EmployeeHomepage />} />
+        <Route path="AdminHomepage" element={<AdminHomepage />} />
+      </Route>
+    )
+  );
 
-    return (
-        <Router>
-            <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden">
-                <Navbar handleOrderPopup={handleOrderPopup} />
-                <Routes>
-                    <Route path="/" element={<Hero handleOrderPopup={handleOrderPopup} />} />
-                    <Route path="/profile" element={<Profile />} /> {/* Profile route */}
-                </Routes>
-                <Category />
-                <Category2 />
-                <Services />
-                <Banner data={BannerData} />
-                <Products />
-                <Banner data={BannerData2} />
-                <Blogs />
-                <Partners />
-                <Footer />
-                <Popup orderPopup={orderPopup} handleOrderPopup={handleOrderPopup} />
-            </div>
-        </Router>
-    );
+  return (
+    <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 overflow-hidden">
+      <RouterProvider router={router} />
+    </div>
+  );
 };
 
 export default App;

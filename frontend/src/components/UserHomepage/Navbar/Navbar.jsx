@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
-import { FaShoppingCart, FaCaretDown } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaCaretDown, FaUser } from "react-icons/fa";
 import DarkMode from "./DarkMode";
-import Button from '../Shared/Button';
-
+import { Link } from 'react-router-dom';
+import Button from "../Shared/Button";
+ 
 const MenuLinks = [
     { id: 1, name: "Home", link: "/#" },
     { id: 2, name: "Shop", link: "/#shop" },
@@ -18,16 +18,20 @@ const DropdownLinks = [
     { id: 3, name: "Support", link: "/#support" },
 ];
 
+const UserTypeLinks = [
+    { id: 1, name: "Employee", link: "/EmployeeHomePage", icon: "E" },
+    { id: 2, name: "Admin", link: "/AdminHomePage", icon: "A" },
+];
+
 const Navbar = ({ handleOrderPopup }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const navigate = useNavigate();
+    const [userTypeDropdownOpen, setUserTypeDropdownOpen] = useState(false);
 
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
     const closeDropdown = () => setDropdownOpen(false);
-
-    const goToProfile = () => {
-        navigate("/profile"); // Navigate to the profile page
-    };
+    
+    const toggleUserTypeDropdown = () => setUserTypeDropdownOpen(!userTypeDropdownOpen);
+    const closeUserTypeDropdown = () => setUserTypeDropdownOpen(false);
 
     return (
         <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
@@ -53,7 +57,7 @@ const Navbar = ({ handleOrderPopup }) => {
                                         </a>
                                     </li>
                                 ))}
-                                {/* Dropdown */}
+                                {/* Quick Links Dropdown */}
                                 <li className="relative cursor-pointer group">
                                     <button
                                         onClick={toggleDropdown}
@@ -105,13 +109,47 @@ const Navbar = ({ handleOrderPopup }) => {
                             aria-label="Shopping Cart"
                         >
                             <FaShoppingCart className="text-xl text-gray-600 dark:text-gray-400" />
-                            <div className="w-4 h-4 bg-red-500 text-white rounded-full absolute top-0 right-0 flex items-center justify-center text-xs">
-                                4
-                            </div>
                         </button>
-                        {/* Profile and user switch */}
-                        <Button text="Profile" bgColor="bg-primary" textColor="text-white" handler={goToProfile} />
-                        <Button text="User type" bgColor="bg-primary" textColor="text-white" handler={() => {}} />
+
+                        {/* Profile Button */}
+                        <Link to='/profile'> 
+                            <Button text="Profile" bgColor="bg-brandGreen" textColor="text-white" />
+                        </Link>
+
+                        {/* User Type Switch Dropdown */}
+                        <div className="relative">
+                            <button
+                                onClick={toggleUserTypeDropdown}
+                                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+                            >
+                                Switch User
+                                <FaCaretDown className={`transition-transform duration-300 ${userTypeDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                            {userTypeDropdownOpen && (
+                                <div
+                                    className="absolute right-0 mt-2 w-[150px] rounded-md bg-white shadow-md dark:bg-gray-900 p-2 dark:text-white"
+                                    onMouseLeave={closeUserTypeDropdown}
+                                >
+                                    <ul className="space-y-2">
+                                        {UserTypeLinks.map((data) => (
+                                            <li key={data.id}>
+                                                <Link
+                                                    to={data.link}
+                                                    className="flex items-center gap-2 text-gray-500 dark:hover:text-white duration-200 w-full p-2 hover:bg-primary/20 rounded-md font-semibold"
+                                                    onClick={closeUserTypeDropdown}
+                                                >
+                                                    <span className="w-6 h-6 flex items-center justify-center bg-primary text-white rounded-full text-sm">
+                                                        {data.icon}
+                                                    </span>
+                                                    {data.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+
                         {/* Dark mode toggle */}
                         <DarkMode />
                     </div>
