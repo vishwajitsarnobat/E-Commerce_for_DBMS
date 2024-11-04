@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useEffect} from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero'
 import './App.css';
@@ -41,6 +41,13 @@ const BannerData2 = {
 }
 
 const App = () => {
+    useEffect(()=>{
+        fetch("http://localhost:3000/users")
+        .then(res=>res.json())
+        .then(data=>console.log(data))
+        .catch(err=>console.log(err));
+    },[])
+    
     const [orderPopup, setOrderPopup] = React.useState(false);
 
     const handleOrderPopup = () => {
