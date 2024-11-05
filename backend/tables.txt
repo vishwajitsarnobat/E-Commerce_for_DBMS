@@ -1,0 +1,51 @@
+Customer
+
+    customer_id, first_name, last_name, email, phone_number, registration_date, loyalty_points
+
+Product_Category
+
+    category_id, category_name, description
+
+Offer
+
+    offer_id, offer_title, start_date, end_date, discount_value
+
+Supplier
+
+    supplier_id, first_name, last_name, email, phone_number
+
+Employee
+
+    employee_id, first_name, last_name, role, email, phone_no, hire_date, salary
+
+Shopping_Cart
+
+    cart_id, customer_id, total
+
+Product
+
+    product_id, name, description, rating, price, category_id, offer_id, stock_quantity, supplier_id, cart_id
+
+Cart_Products
+
+    cart_id, product_id, quantity
+
+Address
+
+    customer_id, street, city, state, pin_code, country
+
+Warehouse
+
+    warehouse_id, capacity, rent, manager_id
+
+Review
+
+    review_id, customer_id, product_id, rating, review_text, review_date
+
+Orders
+
+    order_id, customer_id, cart_id, order_date, delivery_date, total_amount, status
+
+Transaction
+
+    transaction_id, order_id, transaction_date, amount, transaction_status, payment_method
