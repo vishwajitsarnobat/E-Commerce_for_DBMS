@@ -31,6 +31,7 @@ const handleError = (res, error, operation) => {
     sqlState: error.sqlState,
     sqlMessage: error.sqlMessage
   });
+  console.log("Hello");
   
   // Handle specific MySQL errors
   switch (error.code) {

@@ -1,5 +1,5 @@
-CREATE DATABASE aayush3;
-USE aayush3;
+CREATE DATABASE ecommerce_db;
+USE ecommerce_db;
 
 CREATE TABLE customers (
     customer_id INT PRIMARY KEY,
