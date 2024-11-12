@@ -164,6 +164,8 @@ const AdminDashboard = () => {
     setSubmitError(null);
 
     const validation = validateFormData(formData, activeTab);
+    //
+    console.log(validation)
     if (!validation.isValid) {
       setSubmitError(validation.errors.join(', '));
       return;
